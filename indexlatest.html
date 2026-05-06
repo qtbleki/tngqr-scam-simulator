@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8"/>
+<title>Reward Simulation</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+<style>
+body {
+  font-family: Arial;
+  margin:0;
+  background: linear-gradient(135deg,#0b3d91,#1d4ed8,#60a5fa);
+  min-height:100vh;
+}
+
+/* MAIN CARD */
+.box {
+  max-width:420px;
+  margin:40px auto;
+  background:white;
+  padding:24px;
+  border-radius:18px;
+  box-shadow:0 15px 35px rgba(0,0,0,0.25);
+  text-align:center;
+}
+
+/* HEADER */
+.header {
+  background: linear-gradient(135deg,#1d4ed8,#3b82f6);
+  color:white;
+  padding:20px;
+  border-radius:14px;
+}
+
+/* BUTTON */
+button {
+  width:90%;
+  padding:14px;
+  margin-top:12px;
+  border:none;
+  border-radius:12px;
+  background:#2563eb;
+  color:white;
+  font-size:16px;
+  font-weight:bold;
+}
+
+/* INPUT */
+input {
+  width:90%;
+  padding:12px;
+  margin:8px 0;
+  border-radius:10px;
+  border:1px solid #dbeafe;
+}
+
+/* CARD */
+.card {
+  background:#f1f5ff;
+  padding:12px;
+  border-radius:12px;
+  margin-top:12px;
+  border:1px solid #dbeafe;
+  text-align:left;
+}
+
+/* ICON */
+.icon {
+  font-size:42px;
+  margin-bottom:10px;
+}
+
+/* ERROR SHAKE */
+@keyframes shake {
+  0% { transform: translateX(0); }
+  20% { transform: translateX(-6px); }
+  40% { transform: translateX(6px); }
+  60% { transform: translateX(-6px); }
+  80% { transform: translateX(6px); }
+  100% { transform: translateX(0); }
+}
+
+.error {
+  border:2px solid #ef4444 !important;
+  animation: shake 0.4s;
+}
+
+/* LIVE FEED */
+.feed-container {
+  height:60px;
+  overflow:hidden;
+  position:relative;
+}
+
+.feed-item {
+  font-size:14px;
+  padding:6px 0;
+}
+
+/* ANIMATION */
+.slide-up {
+  animation: slideUp 0.5s ease;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 0 10px rgba(37,99,235,0.5);
+  }
+  50% {
+    transform: scale(1.08);
+    box-shadow: 0 0 22px rgba(37,99,235,0.9);
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 10px rgba(37,99,235,0.5);
+  }
+}
+
+
+.icon-img {
+  width:200px;
+  height:200px;
+  object-fit:cover;
+  border-radius:50%;
+
+  /* premium glow */
+  box-shadow: 0 0 12px rgba(37,99,235,0.6);
+
+  margin-bottom:10px;
+
+  /* pulse animation */
+  animation: pulse 2s infinite;
+}
+</style>
+</head>
+
+<body>
+
+<!-- STEP 1 -->
+<div class="box" id="step1">
+
+<div style="display:flex; align-items:center; justify-content:center; gap:10px;">
+  <img src="tng.png" style="width:32px; height:32px; border-radius:8px;">
+  <h2 style="margin:0;">Touch 'n Go eWallet</h2>
+</div>
+
+<div class="header">
+
+  <img src="img3.jpeg" class="icon-img">
+
+</div>
+
+<div class="card" style="text-align:center;">
+  <h3>Tebus RM300 Segera!</h3>
+</div>
+
+<button onclick="nextStep()">Klik untuk Tebus</button>
+
+<!-- ✅ LIVE SLIDING FEED -->
+<div class="card">
+  <div class="feed-container">
+    <div id="liveFeed">
+      <div class="feed-item">👤 Ahmad berjaya tebus RM300✅</div>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<!-- STEP 2 -->
+<div class="box" id="step2" style="display:none;">
+
+<div class="icon">🧾</div>
+
+<h3>Sila Isi Maklumat Anda</h3>
+
+<input id="name" placeholder="Nama Penuh" type="text"/>
+<input id="phone" placeholder="Nombor Telefon Telegram" type="tel"/>
+
+<button onclick="submitForm()">Register</button>
+
+</div>
+
+<!-- STEP 3 -->
+<div class="box" id="step3" style="display:none;">
+
+<div class="icon">⚠️</div>
+
+<h2>Simulation Complete</h2>
+
+<p>Ini adalah simulasi kesedaran siber.</p>
+
+</div>
+
+<script>
+
+/* TRACKING */
+function track(event){
+  let data = JSON.parse(localStorage.getItem("stats") || "{}");
+  data[event] = (data[event] || 0) + 1;
+  localStorage.setItem("stats", JSON.stringify(data));
+}
+
+/* VISIT */
+window.onload = function(){
+  track("visit");
+}
+
+/* STEP */
+function nextStep(){
+  track("click_reward");
+  document.getElementById("step1").style.display="none";
+  document.getElementById("step2").style.display="block";
+}
+
+/* SUBMIT */
+function submitForm(){
+
+  let name = document.getElementById("name");
+  let phone = document.getElementById("phone");
+
+  name.classList.remove("error");
+  phone.classList.remove("error");
+
+  if(name.value.trim() === "" || phone.value.trim() === ""){
+    if(name.value.trim() === "") name.classList.add("error");
+    if(phone.value.trim() === "") phone.classList.add("error");
+    track("empty_submit");
+    return;
+  }
+
+  track("submit_form");
+
+  document.getElementById("step2").style.display="none";
+  document.getElementById("step3").style.display="block";
+}
+
+/* 🔥 LIVE FEED SYSTEM */
+const names = [
+"Ahmad","Siti","Ali","Aina","Daniel","John","Farhan","Sarah","Hakim","Izzati",
+"Aiman","Dania","Syafiq","Nurul","Jason","Adam","Hafiz","Amir","Syed","Adrian",
+"Zaki","Hani","Firdaus","Nadia","Faris","Aisyah","Khairul","Irfan","Sofia","Zul",
+"Faiz","Liyana","Azman","Ridwan","Shafiq","Aqilah","Hafizah","Rizal","Danish","Amin"
+];
+
+function generateMessage(){
+  let name = names[Math.floor(Math.random() * names.length)];
+  return `👤 ${name} berjaya tebus RM300✅`;
+}
+
+function updateFeed(){
+  let feed = document.getElementById("liveFeed");
+
+  let newItem = document.createElement("div");
+  newItem.className = "feed-item slide-up";
+  newItem.innerText = generateMessage();
+
+  feed.prepend(newItem);
+
+  if(feed.children.length > 3){
+    feed.removeChild(feed.lastChild);
+  }
+}
+
+/* AUTO UPDATE */
+setInterval(updateFeed, 2500);
+
+</script>
+
+</body>
+</html>
